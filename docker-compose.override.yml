@@ -38,8 +38,8 @@ services:
       timeout: 10s
       retries: 3
     volumes:
-      - ./dockerDevelopement/redis:/data
-      - ./dockerDevelopement/redis.conf:/usr/local/etc/redis/redis.conf
+      - ./dockerDataFiles/redis:/data
+      - ./dockerDataFiles/redis.conf:/usr/local/etc/redis/redis.conf
   
       
   mongodb:
@@ -61,7 +61,7 @@ services:
       timeout: 10s
       retries: 3
     volumes:
-      - ./dockerDevelopement/mongodb:/data/db
+      - ./dockerDataFiles/mongodb:/data/db
 volumes:
   mongodb:
   redis:
