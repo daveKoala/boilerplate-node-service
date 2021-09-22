@@ -1,0 +1,1 @@
+# Node, Typescript service with Docker development environment
