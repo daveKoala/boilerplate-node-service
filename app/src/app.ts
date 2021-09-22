@@ -5,6 +5,9 @@ import express, { Application } from 'express';
 import helmet from 'helmet';
 import ignoreFavIcon from './middleware/ignoreFavIcon';
 import morgan from 'morgan';
+import AppInsight from './lib/azureAppInsights';
+
+AppInsight.start();
 
 const app: Application = express();
 

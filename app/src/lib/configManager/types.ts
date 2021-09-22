@@ -25,7 +25,7 @@ export interface Host {
 }
 
 export interface ConfigSettings {
-  // appInsight: AppInsight;
+  appInsight: AppInsight;
   // apis: APIS;
   cache: Cache;
   database: MongoDB;
