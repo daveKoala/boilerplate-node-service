@@ -1,0 +1,67 @@
+version: '3'
+
+services:
+  app:
+    build:
+      context: ./
+      target: development
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongodb
+    volumes:
+      - ".:/usr/src/"
+      # Don't sync the node_modules directory back to the client.
+      - "/usr/src/app/node_modules"
+    environment:
+      SERVICE_NAME: boilerplate
+      CACHE_CONNECTION_STRING: "//local-redis:6379"
+      CACHE_DEFAULT_EXPIRY_TIME: 300
+      MONGODB_CONNECTION_STRING: "mongodb://devadmin:1234@dev-mongodb:27017"
+      MONGODB_COLLECTION_NAME: development
+      PORT: 3000
+      SECRET_STRING: "xHCXEyzhbE2fMRVE5OdK0vqOgo54Ka6aDXHWhXDY"
+  redis:
+    image: redis:alpine
+    container_name: local-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    # Comment this out to view logs / activity in terminal
+    logging:
+        driver: "none"
+    environment:
+      - REDIS_REPLICATION_MODE=master
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 2m
+      timeout: 10s
+      retries: 3
+    volumes:
+      - ./dockerDevelopement/redis:/data
+      - ./dockerDevelopement/redis.conf:/usr/local/etc/redis/redis.conf
+  
+      
+  mongodb:
+    image: mongo:5
+    container_name: "mongodb"
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    # Comment this out to view logs / activity in terminal
+    logging:
+      driver: "none"
+    environment:
+      MONGO_INITDB_DATABASE: development
+      MONGO_INITDB_ROOT_USERNAME: devadmin
+      MONGO_INITDB_ROOT_PASSWORD: 1234
+    healthcheck:
+      test: ["CMD", "netstat -anp | grep 27017"]
+      interval: 2m
+      timeout: 10s
+      retries: 3
+    volumes:
+      - ./dockerDevelopement/mongodb:/data/db
+volumes:
+  mongodb:
+  redis:
