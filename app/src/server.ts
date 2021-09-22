@@ -22,16 +22,16 @@ redisClient
     client.trackEvent({ name: 'redis-connection-error', measurements: err });
   });
 
-mongoose
-  .connect(config.database.connectionString, {
+try {
+  mongoose.connect(config.database.connectionString, {
     useCreateIndex: true,
     useFindAndModify: false,
     useNewUrlParser: true,
     useUnifiedTopology: true,
-  })
-  .catch((error) => {
-    throw new DbError(error.message);
   });
+} catch (error) {
+  throw new DbError((error as Error).message);
+}
 
 app.listen(config.host.port, (): void => {
   console.log(`Connected on port: ${config.host.port}`);

@@ -15,6 +15,8 @@ services:
       - ".:/usr/src/"
       # Don't sync the node_modules directory back to the client.
       - "/usr/src/app/node_modules"
+    environment:
+      MONGODB_CONNECTION_STRING: "mongodb://AzureDiamond:hunter2@mongodb:27017"
   redis:
     image: redis:alpine
     container_name: local-redis
@@ -46,9 +48,9 @@ services:
     logging:
       driver: "none"
     environment:
-      MONGO_INITDB_DATABASE: development
-      MONGO_INITDB_ROOT_USERNAME: devadmin
-      MONGO_INITDB_ROOT_PASSWORD: 1234
+      # MONGO_INITDB_DATABASE: development
+      MONGO_INITDB_ROOT_USERNAME: AzureDiamond
+      MONGO_INITDB_ROOT_PASSWORD: hunter2
     healthcheck:
       test: ["CMD", "netstat -anp | grep 27017"]
       interval: 2m
