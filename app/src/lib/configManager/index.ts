@@ -18,6 +18,7 @@ const config: ConfigSettings = {
   },
   environment: process.env.NODE_ENV || 'development',
   secretString: process.env.SECRET_STRING || 'fMRVE5OdK0vqOgo5',
+  serviceName: process.env.SERVICE_NAME || 'node-service',
 };
 
 export default config;

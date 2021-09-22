@@ -32,5 +32,5 @@ export interface ConfigSettings {
   environment: string;
   secretString: string;
   host: Host;
-  //   serviceName: string;
+  serviceName: string;
 }

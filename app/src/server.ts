@@ -35,7 +35,7 @@ try {
 
 app.listen(config.host.port, (): void => {
   console.log(`Connected on port: ${config.host.port}`);
-  // client.trackEvent({
-  //   name: 'start notification service',
-  // });
+  client.trackEvent({
+    name: `start ${config.serviceName}`,
+  });
 });
