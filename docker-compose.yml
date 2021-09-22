@@ -4,8 +4,12 @@ services:
   app:
     build:
       context: ./
-      target: development
+      target: production
     ports:
       - "3000:3000"
+    env_file:
+      - ./app/.env
     volumes:
       - ".:/usr/src/"
+      # Don't sync the node_modules directory back to the client.
+      - "/usr/src/app/node_modules"
