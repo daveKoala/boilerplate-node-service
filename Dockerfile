@@ -7,7 +7,7 @@ COPY ./app/package-lock.json package-lock.json
 RUN npm ci
 
 FROM base as development
-COPY ./app .
+# COPY ./app .
 CMD ["npm", "run", "dev"]
 
 FROM base as production

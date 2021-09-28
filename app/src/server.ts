@@ -6,9 +6,10 @@ import redisClient from './lib/cache';
 import { client } from './lib/azureAppInsights';
 // Routers
 import pingz from './services/pingz/pingz.router';
+import content from './services/content/content.router';
 import ErrorHandler from './middleware/errorHandler';
 
-app.use('/pingz', pingz);
+app.use('/pingz', pingz).use('/content', content);
 
 // This is the last item of middleware
 app.use(ErrorHandler);
