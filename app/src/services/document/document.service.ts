@@ -1,50 +1,7 @@
-import express, { NextFunction, Request, Response } from 'express';
 import { Data, IDocument } from '../../models/Document';
-// import { BodyItem, IBodyItem } from '../../models/BodyBlock';
-// import hasValidObjectId from '../../middleware/hasValidObjectId';
 import { NotFoundError } from '../../lib/customErrors';
 import { LeanDocument } from 'mongoose';
-
-export interface Mutation {
-  _id: string;
-  verb: string; // put, post, delete
-}
-
-export const sanitize = (doc: any, ret: any, options: any): any => {
-  return {
-    ...doc.toObject(),
-  };
-};
-
-export const findOrCreateRoot = async (body: {
-  _id: string;
-  slug: string;
-  title: string;
-}): Promise<IDocument> => {
-  const { _id, slug, title } = body;
-
-  let document: IDocument | null;
-
-  if (_id) {
-    document = await Data.findByIdAndUpdate(
-      _id,
-      { slug, title },
-      { new: true }
-    );
-  } else {
-    document = await new Data({
-      slug,
-      title,
-      body: [{ name: 'dave', type: 'span' }],
-    }).save();
-  }
-
-  if (document === null) {
-    throw new Error('Doc is NULL');
-  }
-
-  return document;
-};
+import * as documentMethods from './document.methods';
 
 export const findRootById = async (
   id: string
@@ -54,7 +11,7 @@ export const findRootById = async (
   if (!document) {
     throw new NotFoundError('Not found');
   } else {
-    return document?.toObject({ transform: sanitize });
+    return document?.toObject({ transform: documentMethods.sanitize });
   }
 };
 
@@ -75,7 +32,7 @@ export const mutateRootDocument = async (body: {
   // Step #1
   // Create a new document if there is no ID
   // Find document if there is an ID
-  const doc: IDocument = await findOrCreateRoot(body);
+  const doc: IDocument = await documentMethods.findOrCreateRoot(body);
 
   // Step #2
   // Loop through mutations and POST, PUT or DELETE
@@ -86,5 +43,5 @@ export const mutateRootDocument = async (body: {
   // Step #4
   // Save and return populated document
 
-  return doc.toObject({ transform: sanitize });
+  return doc.toObject({ transform: documentMethods.sanitize });
 };
