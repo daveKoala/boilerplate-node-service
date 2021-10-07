@@ -1,15 +1,47 @@
 version: '3'
 
 services:
-  app:
-    build:
-      context: ./
-      target: production
+  redis:
+    image: redis:alpine
+    container_name: local-redis
+    restart: unless-stopped
     ports:
-      - "3000:3000"
-    env_file:
-      - ./app/.env
+      - "6379:6379"
+    # Comment this out to view logs / activity in terminal
+    logging:
+        driver: "none"
+    environment:
+      - REDIS_REPLICATION_MODE=master
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 2m
+      timeout: 10s
+      retries: 3
     volumes:
-      - ".:/usr/src/"
-      # Don't sync the node_modules directory back to the client.
-      - "/usr/src/app/node_modules"
+      - ./dockerDataFiles/redis:/data
+      - ./dockerDataFiles/redis.conf:/usr/local/etc/redis/redis.conf
+  
+      
+  mongodb:
+    image: mongo:5
+    container_name: "mongodb"
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    # Comment this out to view logs / activity in terminal
+    logging:
+      driver: "none"
+    environment:
+      # MONGO_INITDB_DATABASE: development
+      MONGO_INITDB_ROOT_USERNAME: AzureDiamond
+      MONGO_INITDB_ROOT_PASSWORD: hunter2
+    healthcheck:
+      test: ["CMD", "netstat -anp | grep 27017"]
+      interval: 2m
+      timeout: 10s
+      retries: 3
+    volumes:
+      - ./dockerDataFiles/mongodb:/data/db
+volumes:
+  mongodb:
+  redis:
