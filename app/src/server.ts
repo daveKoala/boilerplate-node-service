@@ -1,14 +1,15 @@
 import app from './app';
 import config from './lib/configManager';
-import mongoose from './lib/mongodb';
+import mongooseConnect from './lib/mongodb';
 import { DbError } from './lib/customErrors';
 import redisClient from './lib/cache';
 import { client } from './lib/azureAppInsights';
 // Routers
 import pingz from './services/pingz/pingz.router';
+import document from './services/document/document.router';
 import ErrorHandler from './middleware/errorHandler';
 
-app.use('/pingz', pingz);
+app.use('/pingz', pingz).use('/data', document);
 
 // This is the last item of middleware
 app.use(ErrorHandler);
@@ -23,12 +24,7 @@ redisClient
   });
 
 try {
-  mongoose.connect(config.database.connectionString, {
-    useCreateIndex: true,
-    useFindAndModify: false,
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  });
+  mongooseConnect({ db: config.database.connectionString });
 } catch (error) {
   throw new DbError((error as Error).message);
 }
