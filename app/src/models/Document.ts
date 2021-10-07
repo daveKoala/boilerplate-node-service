@@ -1,6 +1,6 @@
 import { Document, Schema } from 'mongoose';
 import { Base, BaseRefs } from './BaseModel';
-import { SubItem, IBodyItem } from './BodyBlock';
+import { SubItem, IBodyItem } from './BodyItem';
 
 const MODEL_NAME = 'RootDocument';
 

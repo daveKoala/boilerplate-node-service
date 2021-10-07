@@ -13,8 +13,3 @@ export const SubItem: Schema<IBodyItem> = new Schema(
   },
   { timestamps }
 );
-
-// export const BodyItem = Base.discriminator<IBodyItem>(
-//   MODEL_NAME,
-//   BodyItemSchema
-// );

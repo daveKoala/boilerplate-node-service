@@ -2,11 +2,11 @@ class BaseError extends Error {
   code = 500;
   constructor(message: string) {
     super(message);
-    Object.setPrototypeOf(this, BaseError.prototype);
+    // Object.setPrototypeOf(this, BaseError.prototype);
     this.name = this.constructor.name;
-    if (Error.captureStackTrace) {
-      Error.captureStackTrace(this, BaseError);
-    }
+    // if (Error.captureStackTrace) {
+    //   Error.captureStackTrace(this, BaseError);
+    // }
   }
 }
 
@@ -22,16 +22,11 @@ class NotFoundError extends BaseError {
 class ValidationError extends BaseError {
   constructor(message: string) {
     super(message);
-    Object.setPrototypeOf(this, NotFoundError.prototype);
+    Object.setPrototypeOf(this, ValidationError.prototype);
     this.name = this.constructor.name;
     this.code = 400;
   }
 }
-
-class DbError extends BaseError {
-  code = 500;
-}
-
 class ExternalAPIError extends BaseError {
   constructor(message: string) {
     super(message);
@@ -46,14 +41,13 @@ class UnAuthorized extends BaseError {
   constructor(status: number, message: string) {
     super(message);
     this.code = status;
-    Object.setPrototypeOf(this, ExternalAPIError.prototype);
+    Object.setPrototypeOf(this, UnAuthorized.prototype);
     this.name = this.constructor.name;
   }
 }
 
 export {
   BaseError,
-  DbError,
   ExternalAPIError,
   NotFoundError,
   UnAuthorized,

@@ -1,7 +1,6 @@
 import app from './app';
 import config from './lib/configManager';
 import mongooseConnect from './lib/mongodb';
-import { DbError } from './lib/customErrors';
 import redisClient from './lib/cache';
 import { client } from './lib/azureAppInsights';
 // Routers
@@ -26,7 +25,7 @@ redisClient
 try {
   mongooseConnect({ db: config.database.connectionString });
 } catch (error) {
-  throw new DbError((error as Error).message);
+  throw new Error((error as Error).message);
 }
 
 app.listen(config.host.port, (): void => {

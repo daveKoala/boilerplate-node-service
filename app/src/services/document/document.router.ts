@@ -1,7 +1,11 @@
 import express, { NextFunction, Request, Response } from 'express';
-import { Data, IDocument } from '../../models/Document';
-// import { BodyItem, IBodyItem } from '../../models/BodyBlock';
+import { nextTick } from 'process';
 import hasValidObjectId from '../../middleware/hasValidObjectId';
+import {
+  findRootById,
+  deleteRootById,
+  mutateRootDocument,
+} from './document.service';
 
 const router = express.Router();
 
@@ -10,67 +14,42 @@ export interface Mutation {
   verb: string; // put, post, delete
 }
 
-export const sanitize = (doc: any, ret: any, options: any): any => {
-  return {
-    ...doc,
-  };
-};
-
 router.get(
   '/:id',
   hasValidObjectId('id'),
   async (request: Request, response: Response, next: NextFunction) => {
     try {
-      const document = await Data.findById(request.params.id).populate('body');
-      response.status(200).json(document?.toObject({ transform: sanitize }));
+      const rootDocument = await findRootById(request.params.id);
+      response.status(200).json(rootDocument);
     } catch (error) {
       next(error);
     }
   }
 );
 
-router.post('/', async (request: Request, response: Response) => {
-  // const newDocument = await new Data(request.body).save();
-
-  // Step #1
-  // Create a new document if there is no ID
-  // Find document if there is an ID
-  const doc: IDocument = await (async (body): Promise<IDocument> => {
-    const { _id, slug, title } = body;
-
-    let document: IDocument | null;
-
-    if (_id) {
-      document = await Data.findByIdAndUpdate(
-        _id,
-        { slug, title },
-        { new: true }
-      );
-    } else {
-      document = await new Data({
-        slug,
-        title,
-        body: [{ name: 'dave', type: 'span' }],
-      }).save();
+router.delete(
+  '/:id',
+  hasValidObjectId('id'),
+  async (request: Request, response: Response, next: NextFunction) => {
+    try {
+      await deleteRootById(request.params.id);
+      response.status(204).end('ok');
+    } catch (error) {
+      next(error);
     }
+  }
+);
 
-    if (document === null) {
-      throw new Error('Doc is NULL');
+router.post(
+  '/',
+  async (request: Request, response: Response, next: NextFunction) => {
+    try {
+      const rootDocument = await mutateRootDocument(request.body);
+      response.status(200).json(rootDocument);
+    } catch (error) {
+      next(error);
     }
-
-    return document;
-  })(request.body);
-
-  // Step #2
-  // Loop through mutations and POST, PUT or DELETE
-
-  // Step #3
-  // Modify document. Add, remove or move ID's in body
-
-  // Step #4
-  // Save and return populated document
-
-  response.status(200).json(doc.toObject());
-});
+  }
+);
 
 export default router;

@@ -9,7 +9,7 @@ export default ({ db }: TInput): void => {
     mongoose
       .connect(db)
       .then(() => {
-        return console.info(`Successfully connected`);
+        return console.info(`Connected to database`);
       })
       .catch((error) => {
         console.error('Error connecting to database: ', error);

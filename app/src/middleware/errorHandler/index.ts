@@ -1,9 +1,14 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import * as myErrors from '../../lib/customErrors';
 import { client } from '../../lib/azureAppInsights';
 
-const middleware = async (error: Error, req: Request, res: Response) => {
+const middleware = async (
+  error: Error,
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   client.trackException({ exception: error });
 
   if (error instanceof myErrors.BaseError) {

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="Mocha Tests" time="0.0020" tests="3" failures="3">
+  <testsuite name="Root Suite" timestamp="2021-10-07T12:13:20" tests="0" time="0.0000" failures="0">
+  </testsuite>
+  <testsuite name="ObjectId: string is a valid Object ID" timestamp="2021-10-07T12:13:20" tests="3" file="/Users/david.clare/Documents/el1/app/src/middleware/hasValidObjectId/hasValidObjectId.spec.ts" time="0.0020" failures="3">
+    <testcase name="ObjectId: string is a valid Object ID Its is a valid id" time="0.0010" classname="Its is a valid id">
+      <failure message="expected [Function] to be true" type="AssertionError"><![CDATA[AssertionError: expected [Function] to be true
+    at Context.<anonymous> (src/middleware/hasValidObjectId/hasValidObjectId.spec.ts:10:30)
+    at processImmediate (internal/timers.js:464:21)]]></failure>
+    </testcase>
+    <testcase name="ObjectId: string is a valid Object ID Its is NOT a valid id" time="0.0010" classname="Its is NOT a valid id">
+      <failure message="expected [Function] to be false" type="AssertionError"><![CDATA[AssertionError: expected [Function] to be false
+    at Context.<anonymous> (src/middleware/hasValidObjectId/hasValidObjectId.spec.ts:15:30)
+    at processImmediate (internal/timers.js:464:21)]]></failure>
+    </testcase>
+    <testcase name="ObjectId: string is a valid Object ID NULL is NOT a valid id" time="0.0000" classname="NULL is NOT a valid id">
+      <failure message="expected [Function] to be false" type="AssertionError"><![CDATA[AssertionError: expected [Function] to be false
+    at Context.<anonymous> (src/middleware/hasValidObjectId/hasValidObjectId.spec.ts:19:38)
+    at processImmediate (internal/timers.js:464:21)]]></failure>
+    </testcase>
+  </testsuite>
+</testsuites>
