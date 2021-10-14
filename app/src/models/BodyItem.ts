@@ -6,6 +6,10 @@ export interface IBodyItem extends BaseRefs, Document {
   type: string;
 }
 
+export interface IMutation extends IBodyItem {
+  method: string;
+}
+
 export const SubItem: Schema<IBodyItem> = new Schema(
   {
     name: { type: String, required: true },
