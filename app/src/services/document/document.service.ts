@@ -1,5 +1,5 @@
 import { Data, IDocument } from '../../models/Document';
-import { IMutation } from '../../models/BodyItem';
+import { IMutation, IBodyItem } from '../../models/BodyItem';
 import { NotFoundError } from '../../lib/customErrors';
 import { LeanDocument } from 'mongoose';
 import * as documentMethods from './document.methods';
@@ -28,6 +28,7 @@ export const mutateRootDocument = async (payload: {
   slug: string;
   title: string;
   mutations?: IMutation[];
+  body: IBodyItem[];
 }): Promise<LeanDocument<IDocument>> => {
   // const newDocument = await new Data(request.body).save();
 
@@ -36,6 +37,19 @@ export const mutateRootDocument = async (payload: {
   // Find document if there is an ID
   const doc: IDocument = await documentMethods.findOrCreateRoot(payload);
 
+  payload.mutations?.forEach((mutation) => {
+    if (doc.body.id(mutation._id) !== null) {
+      // doc!.body!.id(mutation?._id)!.name = mutation.name;
+      const subDoc = doc!.body!.id(mutation?._id);
+      if (subDoc !== null) {
+        Object.keys(subDoc).forEach((key) => {
+          if (key && mutation[key]) {
+            subDoc[key] = mutation[key];
+          }
+        });
+      }
+    }
+  });
   // Step #2
   // Loop through mutations and POST, PUT or DELETE
   // Step #3

@@ -1,5 +1,5 @@
 import { BaseRefs, timestamps } from './BaseModel';
-import { Document, Schema } from 'mongoose';
+import { Document, Schema, Types } from 'mongoose';
 
 export interface IBodyItem extends BaseRefs, Document {
   name: string;

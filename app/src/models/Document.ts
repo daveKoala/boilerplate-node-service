@@ -1,4 +1,4 @@
-import { Document, Schema } from 'mongoose';
+import { Document, Schema, Types } from 'mongoose';
 import { Base, BaseRefs } from './BaseModel';
 import { SubItem, IBodyItem } from './BodyItem';
 
@@ -7,7 +7,7 @@ const MODEL_NAME = 'RootDocument';
 export interface IDocument extends BaseRefs, Document {
   slug: string;
   title: string;
-  body: IBodyItem[];
+  body: Types.DocumentArray<IBodyItem>;
 }
 
 const DocumentBlockSchema: Schema = new Schema(
@@ -16,7 +16,7 @@ const DocumentBlockSchema: Schema = new Schema(
     _type: { type: String },
     slug: { type: String },
     title: { type: String },
-    body: [SubItem],
+    body: [{ type: SubItem, ref: 'SubItem', required: true }],
   },
   {
     toObject: { versionKey: false },

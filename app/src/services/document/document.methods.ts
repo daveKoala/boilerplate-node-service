@@ -1,3 +1,4 @@
+import { IBodyItem } from '../../models/BodyItem';
 import { Data, IDocument } from '../../models/Document';
 
 export interface Mutation {
@@ -11,12 +12,13 @@ export const sanitize = (doc: any, ret: any, options: any): any => {
   };
 };
 
-export const findOrCreateRoot = async (body: {
+export const findOrCreateRoot = async (payload: {
   _id: string;
   slug: string;
   title: string;
+  body: IBodyItem[];
 }): Promise<IDocument> => {
-  const { _id, slug, title } = body;
+  const { _id, slug, title } = payload;
 
   let document: IDocument | null;
 
@@ -30,7 +32,7 @@ export const findOrCreateRoot = async (body: {
     document = await new Data({
       slug,
       title,
-      body: [{ name: 'dave', type: 'span' }],
+      body: payload.body,
     }).save();
   }
 
