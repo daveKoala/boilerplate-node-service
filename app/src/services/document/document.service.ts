@@ -30,33 +30,34 @@ export const mutateRootDocument = async (payload: {
   mutations?: IMutation[];
   body: IBodyItem[];
 }): Promise<LeanDocument<IDocument>> => {
-  // const newDocument = await new Data(request.body).save();
-
   // Step #1
-  // Create a new document if there is no ID
-  // Find document if there is an ID
+  // Find or Create a new root document
   const doc: IDocument = await documentMethods.findOrCreateRoot(payload);
 
-  payload.mutations?.forEach((mutation) => {
-    if (doc.body.id(mutation._id) !== null) {
-      // doc!.body!.id(mutation?._id)!.name = mutation.name;
-      const subDoc = doc!.body!.id(mutation?._id);
-      if (subDoc !== null) {
-        Object.keys(subDoc).forEach((key) => {
-          if (key && mutation[key]) {
-            subDoc[key] = mutation[key];
-          }
-        });
-      }
+  // Loop over 'body' mutations adding new items (put), updating (patch) or removing (delete)
+  payload.mutations?.forEach((mutation, index) => {
+    if (mutation.method.toLowerCase() === 'put') {
+      doc.body.push({ ...mutation, _positionIndex: index });
+    }
+
+    if (
+      mutation.method.toLowerCase() === 'patch' &&
+      doc.body.id(mutation._id) !== null
+    ) {
+      doc!.body!.id(mutation?._id)!.name = mutation.name;
+      doc!.body!.id(mutation?._id)!._type = mutation._type;
+      doc!.body!.id(mutation?._id)!._positionIndex = index;
+    }
+
+    if (
+      mutation.method.toLowerCase() === 'delete' &&
+      doc.body.id(mutation._id) !== null
+    ) {
+      doc!.body!.id(mutation?._id)!.remove();
     }
   });
-  // Step #2
-  // Loop through mutations and POST, PUT or DELETE
-  // Step #3
-  // Modify document. Add, remove or move ID's in body
 
-  // Step #4
-  // Save and return populated document
+  // Save the root document. NOTE, sub documents are not persisted until root is saved
   doc.save();
 
   return doc.toObject({ transform: documentMethods.sanitize });

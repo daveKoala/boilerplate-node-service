@@ -21,4 +21,12 @@ const baseOptions = {
   timestamps,
 };
 
-export const Base = model('Base', new Schema({}, baseOptions));
+const baseSchema: Schema = new Schema(
+  {
+    _ref: { type: String },
+    _type: { type: String },
+  },
+  baseOptions
+);
+
+export const Base = model('Base', baseSchema);

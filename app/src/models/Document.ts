@@ -12,8 +12,6 @@ export interface IDocument extends BaseRefs, Document {
 
 const DocumentBlockSchema: Schema = new Schema(
   {
-    _ref: { type: String },
-    _type: { type: String },
     slug: { type: String },
     title: { type: String },
     body: [{ type: SubItem, ref: 'SubItem', required: true }],

@@ -1,9 +1,9 @@
 import { BaseRefs, timestamps } from './BaseModel';
-import { Document, Schema, Types } from 'mongoose';
+import { Document, Schema } from 'mongoose';
 
 export interface IBodyItem extends BaseRefs, Document {
   name: string;
-  type: string;
+  _positionIndex: number;
 }
 
 export interface IMutation extends IBodyItem {
@@ -12,8 +12,10 @@ export interface IMutation extends IBodyItem {
 
 export const SubItem: Schema<IBodyItem> = new Schema(
   {
+    _ref: { type: String },
+    _type: { type: String },
     name: { type: String, required: true },
-    type: { type: String, required: true },
+    _positionIndex: { type: Number, required: true },
   },
   { timestamps }
 );

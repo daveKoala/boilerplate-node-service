@@ -32,7 +32,10 @@ export const findOrCreateRoot = async (payload: {
     document = await new Data({
       slug,
       title,
-      body: payload.body,
+      body: payload.body.reduce((acc, item, index) => {
+        acc.push({ ...item, _positionIndex: index });
+        return acc;
+      }, [] as unknown[]),
     }).save();
   }
 
