@@ -37,7 +37,7 @@ export const mutateRootDocument = async (payload: {
   // Loop over 'body' mutations adding new items (put), updating (patch) or removing (delete)
   payload.mutations?.forEach((mutation, index) => {
     if (mutation.method.toLowerCase() === 'put') {
-      doc.body.push({ ...mutation, _positionIndex: index });
+      doc.body.addToSet({ ...mutation, _positionIndex: index });
     }
 
     if (
