@@ -1,6 +1,6 @@
 import express, { NextFunction, Request, Response } from 'express';
-import { nextTick } from 'process';
 import hasValidObjectId from '../../middleware/hasValidObjectId';
+import { IBodyItem } from '../../models/BodyItem';
 import {
   findRootById,
   deleteRootById,
@@ -9,10 +9,17 @@ import {
 
 const router = express.Router();
 
-export interface Mutation {
-  _id: string;
-  verb: string; // put, post, delete
+export interface ITypes {
+  description: string;
+  _type: IBodyItem['_type'];
 }
+
+const availableTypes = (): ITypes[] => [
+  { _type: 'span', description: '' },
+  { _type: 'mainImage', description: '' },
+  { _type: 'banner', description: '' },
+  { _type: 'textArea', description: '' },
+];
 
 router.get(
   '/:id',
@@ -20,7 +27,9 @@ router.get(
   async (request: Request, response: Response, next: NextFunction) => {
     try {
       const rootDocument = await findRootById(request.params.id);
-      response.status(200).json(rootDocument);
+      response
+        .status(200)
+        .json({ document: rootDocument, availableTypes: availableTypes() });
     } catch (error) {
       next(error);
     }
@@ -45,7 +54,9 @@ router.post(
   async (request: Request, response: Response, next: NextFunction) => {
     try {
       const rootDocument = await mutateRootDocument(request.body);
-      response.status(200).json(rootDocument);
+      response
+        .status(200)
+        .json({ document: rootDocument, availableTypes: availableTypes() });
     } catch (error) {
       next(error);
     }

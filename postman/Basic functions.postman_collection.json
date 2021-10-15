@@ -1,0 +1,391 @@
+{
+	"info": {
+		"_postman_id": "666b95ba-237e-4939-b431-d2c3900439bf",
+		"name": "Basic functions",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create a new root document",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							"const jsonData = pm.response.json();",
+							"",
+							"console.log(jsonData)",
+							"",
+							"pm.environment.set(\"doc_id\", jsonData.document._id);",
+							"",
+							"pm.environment.set(\"body\", jsonData.document)",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const body = {",
+							"    // _id: \"615dc0d87f0105015132c80b\",",
+							"    slug: 'slug sausages NEW',",
+							"    title: 'This is the title',",
+							"    body: [",
+							"        {name: 'title', _type: 'span'},",
+							"        {name: 'a url', _type: 'mainImage'},",
+							"    ],",
+							"  }",
+							"",
+							"pm.request.body.raw = JSON.stringify(body)"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/data",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"data"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "A root document by id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"const jsonData = pm.response.json();",
+							"",
+							"pm.environment.set(\"body\", jsonData.document)"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/data/:id",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"data",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "{{doc_id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Mutate a documents body items",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							"const jsonData = pm.response.json();",
+							"",
+							"console.log(jsonData)",
+							"",
+							"pm.environment.set(\"doc_id\", jsonData._id);",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const orginalBody =",
+							"    pm.environment.get(\"body\");",
+							"",
+							"const getMutation = function(body) {",
+							"    return body.map(item => ({ ...item, method: \"patch\", name: `${item.name}-donna`, _type: `${item._type} - new type x` }))",
+							"}",
+							"",
+							"",
+							"const mutationBody = {",
+							"   ...orginalBody,",
+							"   mutations: [...getMutation(orginalBody.body)].reverse()",
+							"  }",
+							"",
+							"delete mutationBody.body;",
+							"",
+							"console.log(mutationBody)",
+							"",
+							"pm.request.body.raw = JSON.stringify(mutationBody)"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/data",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"data"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add a subdocument",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							"const jsonData = pm.response.json();",
+							"",
+							"console.log(jsonData)",
+							"",
+							"pm.environment.set(\"doc_id\", jsonData.document._id);",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const orginalBody =",
+							"    pm.environment.get(\"body\");",
+							"",
+							"const getMutation = function(body) {",
+							"    return body.map(item => ({ ...item, method: \"patch\", name: `${item.name}-donna`, _type: `${item._type} - new type` }))",
+							"}",
+							"",
+							"",
+							"const mutationBody = {",
+							"   ...orginalBody,",
+							"   mutations: [...getMutation(orginalBody.body).reverse(), {name: 'banner title', _type: 'banner', method: 'put'}]",
+							"  }",
+							"",
+							"delete mutationBody.body;",
+							"",
+							"console.log(mutationBody)",
+							"",
+							"pm.request.body.raw = JSON.stringify(mutationBody)"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/data",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"data"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete a subdoc",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							"const jsonData = pm.response.json();",
+							"",
+							"console.log(jsonData)",
+							"",
+							"pm.environment.set(\"doc_id\", jsonData.document._id);",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const orginalBody =",
+							"    pm.environment.get(\"body\");",
+							"",
+							"const getMutation = function(body) {",
+							"    return body.map(item => ({ ...item, method: \"delete\", name: `${item.name}-donna`, _type: `${item._type} - new type` }))",
+							"}",
+							"",
+							"",
+							"const mutationBody = {",
+							"   ...orginalBody,",
+							"   mutations: getMutation(orginalBody.body).reverse()",
+							"  }",
+							"",
+							"delete mutationBody.body;",
+							"",
+							"console.log(mutationBody)",
+							"",
+							"pm.request.body.raw = JSON.stringify(mutationBody)"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/data",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"data"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "A root document by id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 204 or 404\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([204, 404])",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/data/:id",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"data",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "{{doc_id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
