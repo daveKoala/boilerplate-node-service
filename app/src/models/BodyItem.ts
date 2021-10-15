@@ -1,16 +1,8 @@
-import { BaseRefs, timestamps } from './BaseModel';
-import { Document, Schema } from 'mongoose';
+import { timestamps } from './BaseModel';
+import { Schema } from 'mongoose';
+import { IBodyDoc } from '../types';
 
-export interface IBodyItem extends BaseRefs, Document {
-  name: string;
-  _positionIndex: number;
-}
-
-export interface IMutation extends IBodyItem {
-  method: string;
-}
-
-export const SubItem: Schema<IBodyItem> = new Schema(
+export const SubItem: Schema<IBodyDoc> = new Schema(
   {
     _ref: { type: String },
     _type: { type: String },

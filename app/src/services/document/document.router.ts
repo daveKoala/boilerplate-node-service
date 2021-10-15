@@ -1,6 +1,6 @@
 import express, { NextFunction, Request, Response } from 'express';
 import hasValidObjectId from '../../middleware/hasValidObjectId';
-import { IBodyItem } from '../../models/BodyItem';
+import { ITypes } from '../../types';
 import {
   findRootById,
   deleteRootById,
@@ -8,11 +8,6 @@ import {
 } from './document.service';
 
 const router = express.Router();
-
-export interface ITypes {
-  description: string;
-  _type: IBodyItem['_type'];
-}
 
 const availableTypes = (): ITypes[] => [
   { _type: 'span', description: '' },

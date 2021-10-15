@@ -1,8 +1,8 @@
-import { Data, IDocument } from '../../models/Document';
-import { IMutation, IBodyItem } from '../../models/BodyItem';
+import { Data } from '../../models/Document';
 import { NotFoundError } from '../../lib/customErrors';
-import { LeanDocument } from 'mongoose';
 import * as documentMethods from './document.methods';
+import { LeanDocument } from 'mongoose';
+import { IDocument, IMutation, IBodyDoc } from '../../types';
 
 export const findRootById = async (
   id: string
@@ -28,7 +28,7 @@ export const mutateRootDocument = async (payload: {
   slug: string;
   title: string;
   mutations?: IMutation[];
-  body: IBodyItem[];
+  body: IBodyDoc[];
 }): Promise<LeanDocument<IDocument>> => {
   // Step #1
   // Find or Create a new root document
@@ -36,6 +36,7 @@ export const mutateRootDocument = async (payload: {
 
   // Loop over 'body' mutations adding new items (put), updating (patch) or removing (delete)
   payload.mutations?.forEach((mutation, index) => {
+    // There needs to be validation of the mutations for put and patch that takes into account the _type of each body item
     if (mutation.method.toLowerCase() === 'put') {
       doc.body.addToSet({ ...mutation, _positionIndex: index });
     }
@@ -58,7 +59,7 @@ export const mutateRootDocument = async (payload: {
   });
 
   // Save the root document. NOTE, sub documents are not persisted until root is saved
-  doc.save();
+  await doc.save();
 
   return doc.toObject({ transform: documentMethods.sanitize });
 };

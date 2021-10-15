@@ -1,14 +1,27 @@
-import { IBodyItem } from '../../models/BodyItem';
-import { Data, IDocument } from '../../models/Document';
+import { IBodyDoc, IBodyItem, IDocument } from '../../types';
+import { Data } from '../../models/Document';
 
 export interface Mutation {
   _id: string;
   verb: string; // put, post, delete
 }
 
-export const sanitize = (doc: any, ret: any, options: any): any => {
+export const sortedBodyItems = (bodyItems: IBodyDoc[]): IBodyDoc[] => {
+  return bodyItems?.sort((a: IBodyDoc, b: IBodyDoc) => {
+    if (a._positionIndex < b._positionIndex) {
+      return -1;
+    }
+    if (a._positionIndex > b._positionIndex) {
+      return 1;
+    }
+    return 0;
+  });
+};
+
+export const sanitize = (doc: any, ret: any, options: any): IDocument => {
   return {
     ...doc.toObject(),
+    body: sortedBodyItems(doc.toObject().body),
   };
 };
 
