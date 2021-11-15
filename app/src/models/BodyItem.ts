@@ -7,7 +7,7 @@ export const SubItem: Schema<IBodyDoc> = new Schema(
     _ref: { type: String },
     _type: { type: String },
     name: { type: String, required: true },
-    tags: [{ type: Array }],
+    tags: [{ type: String }],
     _positionIndex: { type: Number, required: true },
   },
   { timestamps }

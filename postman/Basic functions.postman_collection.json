@@ -39,8 +39,8 @@
 							"    slug: 'slug sausages NEW',",
 							"    title: 'This is the title',",
 							"    body: [",
-							"        {name: 'title', _type: 'span'},",
-							"        {name: 'a url', _type: 'mainImage'},",
+							"        {name: 'title', _type: 'span', tags: ['red', 'blue']},",
+							"        {name: 'a url', _type: 'mainImage', tags: ['green', 'blue']},",
 							"    ],",
 							"  }",
 							"",
@@ -89,6 +89,14 @@
 							"",
 							"const jsonData = pm.response.json();",
 							"",
+							"pm.test(\"Document with correct id is returned\", function () {",
+							"    pm.expect(",
+							"        jsonData.document._id",
+							"    ).to.eql(",
+							"        pm.environment.get(\"doc_id\")",
+							"    )",
+							"});",
+							"",
 							"pm.environment.set(\"body\", jsonData.document)"
 						],
 						"type": "text/javascript"
@@ -135,7 +143,7 @@
 							"",
 							"console.log(jsonData)",
 							"",
-							"pm.environment.set(\"doc_id\", jsonData._id);",
+							"pm.environment.set(\"doc_id\", jsonData.document._id);",
 							"",
 							""
 						],
@@ -150,16 +158,18 @@
 							"    pm.environment.get(\"body\");",
 							"",
 							"const getMutation = function(body) {",
-							"    return body.map(item => ({ ...item, method: \"patch\", name: `${item.name}-donna`, _type: `${item._type} - new type x` }))",
+							"    return body.map((item, index) => ({ ...item, method: \"patch\", tags: [...item.tags || [], ...[,`${index} - a new tag here`]], name: `${item.name}-donna`, _type: `${item._type} - new type x` }))",
 							"}",
 							"",
 							"",
 							"const mutationBody = {",
 							"   ...orginalBody,",
+							"   title: \"a new name here\",",
+							"   tags: ['a new tag'],",
 							"   mutations: [...getMutation(orginalBody.body)].reverse()",
 							"  }",
 							"",
-							"delete mutationBody.body;",
+							"// delete mutationBody.body;",
 							"",
 							"console.log(mutationBody)",
 							"",
@@ -232,7 +242,7 @@
 							"",
 							"const mutationBody = {",
 							"   ...orginalBody,",
-							"   mutations: [...getMutation(orginalBody.body).reverse(), {name: 'banner title', _type: 'banner', method: 'put'}]",
+							"   mutations: [...getMutation(orginalBody.body).reverse(), {name: 'banner title 2', _type: 'banner', method: 'put'}]",
 							"  }",
 							"",
 							"delete mutationBody.body;",
@@ -342,6 +352,99 @@
 					"port": "3000",
 					"path": [
 						"data"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "find doc / body wit tags",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.request.body.raw = JSON.stringify({",
+							"    // tags: [\"test\", \"example\", \"blue\"]",
+							"    tags: [\"blue\"]",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/data/tags",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"data",
+						"tags"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "clone by id",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.request.body.raw = JSON.stringify({",
+							"    // tags: [\"test\", \"example\", \"blue\"]",
+							"    tags: [\"blue\", \"example\"]",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/data/clone/:id",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"data",
+						"clone",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "{{doc_id}}"
+						}
 					]
 				}
 			},
