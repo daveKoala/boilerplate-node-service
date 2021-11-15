@@ -10,7 +10,7 @@ const MODEL_NAME = 'RootDocument';
 const DocumentBlockSchema: Schema = new Schema(
   {
     slug: { type: String },
-    tags: [{ type: Array }],
+    tags: [{ type: String }],
     title: { type: String },
     body: [{ type: SubItem, ref: 'SubItem', required: true }],
   },

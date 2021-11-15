@@ -77,3 +77,12 @@ export const mutateRootDocument = async (payload: {
 
   return doc.toObject({ transform: documentMethods.sanitize });
 };
+
+export const findAnyWithTags = async (
+  tags: Tags
+): Promise<LeanDocument<IDocument>[]> => {
+  const docs = await Data.find({
+    $or: [{ tags: { $in: tags } }, { 'body.tags': { $in: tags } }],
+  });
+  return docs;
+};

@@ -2,8 +2,9 @@ import express, { NextFunction, Request, Response } from 'express';
 import hasValidObjectId from '../../middleware/hasValidObjectId';
 import { ITypes } from '../../types';
 import {
-  findRootById,
   deleteRootById,
+  findAnyWithTags,
+  findRootById,
   mutateRootDocument,
 } from './document.service';
 
@@ -52,6 +53,22 @@ router.post(
       response
         .status(200)
         .json({ document: rootDocument, availableTypes: availableTypes() });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+router.post(
+  '/tags',
+  async (request: Request, response: Response, next: NextFunction) => {
+    try {
+      if (!request.body.tags) {
+        throw new Error('no tags given');
+      }
+
+      const docs = await findAnyWithTags(request.body.tags);
+      response.status(200).json(docs);
     } catch (error) {
       next(error);
     }
