@@ -2,3 +2,4 @@ app/node_modules
 **/dockerDevelopement/*
 **/dockerDataFiles/*
 .env
+app/test-results.xml
