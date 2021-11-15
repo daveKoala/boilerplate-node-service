@@ -1,4 +1,4 @@
-import { IBodyDoc, IBodyItem, IDocument } from '../../types';
+import { IBodyDoc, IBodyItem, IDocument, Tags } from '../../types';
 import { Data } from '../../models/Document';
 
 export interface Mutation {
@@ -28,22 +28,24 @@ export const sanitize = (doc: any, ret: any, options: any): IDocument => {
 export const findOrCreateRoot = async (payload: {
   _id: string;
   slug: string;
+  tags: Tags;
   title: string;
   body: IBodyItem[];
 }): Promise<IDocument> => {
-  const { _id, slug, title } = payload;
+  const { _id, slug, tags, title } = payload;
 
   let document: IDocument | null;
 
   if (_id) {
     document = await Data.findByIdAndUpdate(
       _id,
-      { slug, title },
+      { slug, tags, title },
       { new: true }
     );
   } else {
     document = await new Data({
       slug,
+      tags,
       title,
       body: payload.body.reduce((acc, item, index) => {
         acc.push({ ...item, _positionIndex: index });
@@ -54,7 +56,7 @@ export const findOrCreateRoot = async (payload: {
 
   if (document === null) {
     throw new Error(
-      'Unable to create document. Try again. If it persists contact admin'
+      'Unable to create document. Try again. If error persists contact admin'
     );
   }
 

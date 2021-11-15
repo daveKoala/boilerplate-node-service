@@ -2,7 +2,7 @@ import { Data } from '../../models/Document';
 import { NotFoundError } from '../../lib/customErrors';
 import * as documentMethods from './document.methods';
 import { LeanDocument } from 'mongoose';
-import { IDocument, IMutation, IBodyDoc } from '../../types';
+import { IDocument, IMutation, IBodyDoc, Tags } from '../../types';
 
 export const findRootById = async (
   id: string
@@ -26,15 +26,26 @@ export const deleteRootById = async (id: string): Promise<void> => {
 export const mutateRootDocument = async (payload: {
   _id: string;
   slug: string;
+  tags: Tags;
   title: string;
   mutations?: IMutation[];
   body: IBodyDoc[];
 }): Promise<LeanDocument<IDocument>> => {
+  console.log(payload.mutations);
   // Step #1
-  // Find or Create a new root document
+  // Find or Create the root document
   const doc: IDocument = await documentMethods.findOrCreateRoot(payload);
 
   // Loop over 'body' mutations adding new items (put), updating (patch) or removing (delete)
+  /* The '_positionIndex' field is used to order the doc.body array.
+    E.g doc.body = [ 
+      {name: 'a', _positionIndex: 3},
+      {name: 'b', _positionIndex: 1},
+      {name: 'c', _positionIndex: 2},
+    ]
+
+    The 'doc.body' when returned to the client is first ordered by '_positionIndex'
+  */
   payload.mutations?.forEach((mutation, index) => {
     // There needs to be validation of the mutations for put and patch that takes into account the _type of each body item
     if (mutation.method.toLowerCase() === 'put') {
@@ -48,6 +59,9 @@ export const mutateRootDocument = async (payload: {
       doc!.body!.id(mutation?._id)!.name = mutation.name;
       doc!.body!.id(mutation?._id)!._type = mutation._type;
       doc!.body!.id(mutation?._id)!._positionIndex = index;
+      doc!.body!.id(mutation?._id)!.tags = mutation.tags.filter(
+        (tag) => typeof tag === 'string'
+      );
     }
 
     if (

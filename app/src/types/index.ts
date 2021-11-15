@@ -1,5 +1,6 @@
 import { Document, Types } from 'mongoose';
 
+export type Tags = string[];
 export interface ITimestamps {
   _createdAt: string;
   _updatedAt: string;
@@ -8,10 +9,12 @@ export interface ITimestamps {
 export interface BaseRefs {
   _ref: string;
   _type: string;
+  tags: Tags;
 }
 
 export interface IBodyItem extends BaseRefs {
   name: string;
+  tags: Tags;
 }
 
 export interface ITypes {
