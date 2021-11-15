@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import ValidId from './index';
 
-// npm run test:unit:console -- --grep ObjectId
+// npm run test:local -- --grep ObjectId
 
 describe('ObjectId: string is a valid Object ID', () => {
   it('Its is a valid id', () => {

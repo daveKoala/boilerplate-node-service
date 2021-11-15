@@ -93,9 +93,10 @@ export const cloneAndReturnNewDocument = async (
 ): Promise<LeanDocument<IDocument>> => {
   const originalDoc = await Data.findById(id);
   if (originalDoc !== null) {
-    const obj = originalDoc.toObject();
-    const newDoc = new Data(removeAllObjectIds(obj)).save();
-    return newDoc;
+    const newDoc = await new Data(
+      removeAllObjectIds(originalDoc.toObject())
+    ).save();
+    return newDoc.toObject({ transform: documentMethods.sanitize });
   }
 
   throw new NotFoundError('Not found');
