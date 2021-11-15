@@ -2,7 +2,11 @@
 
 ## Set up
 
-This project has two docker compose files. In production ```docker-compose.override.yml``` will not be used. This override file adds additional services like Redis and MongoDB locally and allows the developer to work within a Docker container. The idea being is to have deterministic development environments for different dev's on different machines and OS's.
+This project needs live connections to a MongoDB collection and a Redis instance for caching. There is also an Azure Application Insights connection - but this can be ignored.
+
+The ```docker-compose.yml`` file will set up local Mongo and Redis services.
+
+<!-- This project has two docker compose files. In production ```docker-compose.override.yml``` will not be used. This override file adds additional services like Redis and MongoDB locally and allows the developer to work within a Docker container. The idea being is to have deterministic development environments for different dev's on different machines and OS's. -->
 
 ## Docker
 
@@ -14,6 +18,14 @@ You will need Docker or Docker Desktop installed and running
 git clone <url>
 ```
 
+Copy and rename ```./app/env.example```
+
+```:bash
+cp app/.env.example app/.env
+```
+
+Edit any values to match your environment
+
 ### First use
 
 First time you run the project or want to refresh. This could take a few minutes but subsequent builds make use of cached downloads.
@@ -22,14 +34,37 @@ First time you run the project or want to refresh. This could take a few minutes
 docker-compose up --build
 ```
 
+Then in another terminal
+
+```:bash
+cd app/
+npm run dev
+```
+
 ### Daily use
 
 ```:bash
 docker-compose up
 ```
 
-### Run as in production
+Then in another terminal
 
 ```:bash
-docker-compose -f docker-compose.yml up
+cd app/
+npm run dev
 ```
+
+## NPM Scripts
+
+### Testing
+
+The project has unit tests. The test files ```xxx.spec.ts``` sit alongside the file that is being tested and not in a separate test directory.
+
+You can use grep to just run a single test. E.g. ```npm run test:local -- --grep removeAllObjectIds```
+
+#### test or test:local
+
+This project will fit into a (Azure DevOps) CI/CD pipeline with one of the steps is to run all tests and save a 'report'.
+
+```npm run test:local``` runs all the unit tests with results printed to the terminal.
+```npm run test``` runs all the same tests except a report file is generated. See ```app/test-results.xml```
