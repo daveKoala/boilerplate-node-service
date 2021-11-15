@@ -3,6 +3,7 @@ import { NotFoundError } from '../../lib/customErrors';
 import * as documentMethods from './document.methods';
 import { LeanDocument } from 'mongoose';
 import { IDocument, IMutation, IBodyDoc, Tags } from '../../types';
+import { removeAllObjectIds } from '../../lib/mongodb/removeAllObjectIds';
 
 export const findRootById = async (
   id: string
@@ -85,4 +86,17 @@ export const findAnyWithTags = async (
     $or: [{ tags: { $in: tags } }, { 'body.tags': { $in: tags } }],
   });
   return docs;
+};
+
+export const cloneAndReturnNewDocument = async (
+  id: string
+): Promise<LeanDocument<IDocument>> => {
+  const originalDoc = await Data.findById(id);
+  if (originalDoc !== null) {
+    const obj = originalDoc.toObject();
+    const newDoc = new Data(removeAllObjectIds(obj)).save();
+    return newDoc;
+  }
+
+  throw new NotFoundError('Not found');
 };

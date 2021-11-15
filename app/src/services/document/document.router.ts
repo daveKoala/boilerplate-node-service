@@ -2,6 +2,7 @@ import express, { NextFunction, Request, Response } from 'express';
 import hasValidObjectId from '../../middleware/hasValidObjectId';
 import { ITypes } from '../../types';
 import {
+  cloneAndReturnNewDocument,
   deleteRootById,
   findAnyWithTags,
   findRootById,
@@ -69,6 +70,18 @@ router.post(
 
       const docs = await findAnyWithTags(request.body.tags);
       response.status(200).json(docs);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+router.post(
+  '/clone/:id',
+  async (request: Request, response: Response, next: NextFunction) => {
+    try {
+      const doc = await cloneAndReturnNewDocument(request.params.id);
+      response.status(200).json(doc);
     } catch (error) {
       next(error);
     }
