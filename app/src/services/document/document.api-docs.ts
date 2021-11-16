@@ -1,19 +1,57 @@
-export default {
+const paths = {};
+
+const schemas = {
   Document: {
     type: 'object',
     properties: {
-      title: {
+      slug: {
         type: 'string',
-        description: "Todo's title",
+        description: 'title',
         example: 'Coding in JavaScript',
       },
-      completed: {
-        type: 'boolean',
+      title: {
+        type: 'string',
+        description: 'title',
+        example: 'Coding in JavaScript',
+      },
+      body: {
+        type: 'array',
         description: 'The status of the todo',
-        example: false,
+        items: {
+          $ref: '#/components/schemas/DocumentBodyNew',
+        },
       },
     },
   },
   DocumentNew: {},
   DocumentUpdate: {},
+  DocumentBodyNew: {
+    type: 'object',
+    properties: {
+      name: {
+        type: 'string',
+        description: 'name',
+        example: 'Coding in JavaScript',
+      },
+      _type: {
+        type: 'string',
+        description: 'name',
+        example: 'Coding in JavaScript',
+      },
+      tag: {
+        type: 'array',
+        items: {
+          $ref: '#/components/schemas/Tag',
+        },
+      },
+    },
+  },
+  Tags: {
+    type: 'string',
+  },
+};
+
+export default {
+  paths,
+  schemas,
 };

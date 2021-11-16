@@ -54,6 +54,22 @@ cd app/
 npm run dev
 ```
 
+## API Documentation
+
+There are two form of API documentation both using Openapi version 3.0
+
+There is the Swagger formatted version
+
+```:bash
+http://localhost:3000/api-docs/
+```
+
+A JSON representation. This is useful with applications like Postman where you can import an API schema.
+
+```:bash
+http://localhost:3000/api-docs/spec.json
+```
+
 ## NPM Scripts
 
 ### Testing

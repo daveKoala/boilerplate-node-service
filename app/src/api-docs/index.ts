@@ -1,7 +1,9 @@
 import BasicInfo from './basicInfo';
 import Servers from './servers';
 import { JsonObject } from 'swagger-ui-express';
-import fetchAll from './FetchAllApiDocs';
+
+// services
+import DocumentApi from '../services/document/document.api-docs';
 
 export default {
   ...BasicInfo,
@@ -9,10 +11,10 @@ export default {
   ...Servers,
   components: {
     schemas: {
-      ...fetchAll.schemas(),
+      ...DocumentApi.schemas,
     },
   },
   paths: {
-    ...fetchAll.paths(),
+    ...DocumentApi.paths,
   },
 } as JsonObject;

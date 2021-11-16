@@ -4,7 +4,7 @@ import docs from '../../api-docs';
 
 const router = express.Router();
 
-router.get('/cm.api/spec.json', (req: Request, res: Response) => {
+router.get('/spec.json', (req: Request, res: Response) => {
   res.setHeader('Content-Type', 'application/json');
   res.send(docs);
 });
