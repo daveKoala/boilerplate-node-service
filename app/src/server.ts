@@ -2,13 +2,15 @@ import app from './app';
 import config from './lib/configManager';
 import mongooseConnect from './lib/mongodb';
 import redisClient from './lib/cache';
+
 import { client } from './lib/azureAppInsights';
 // Routers
 import pingz from './services/pingz/pingz.router';
 import document from './services/document/document.router';
 import ErrorHandler from './middleware/errorHandler';
+import apiDocs from './services/apiDocs/apiDoc.router';
 
-app.use('/pingz', pingz).use('/data', document);
+app.use('/pingz', pingz).use('/data', document).use('/api-docs', apiDocs);
 
 // This is the last item of middleware
 app.use(ErrorHandler);

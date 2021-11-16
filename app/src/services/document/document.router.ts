@@ -1,5 +1,7 @@
 import express, { NextFunction, Request, Response } from 'express';
 import hasValidObjectId from '../../middleware/hasValidObjectId';
+import cache from '../../middleware/cache';
+import { saveToCache, makeKey } from '../../lib/cache';
 import { ITypes } from '../../types';
 import {
   cloneAndReturnNewDocument,
@@ -21,9 +23,13 @@ const availableTypes = (): ITypes[] => [
 router.get(
   '/:id',
   hasValidObjectId('id'),
+  cache,
   async (request: Request, response: Response, next: NextFunction) => {
     try {
       const rootDocument = await findRootById(request.params.id);
+
+      saveToCache(makeKey(), rootDocument);
+
       response
         .status(200)
         .json({ document: rootDocument, availableTypes: availableTypes() });

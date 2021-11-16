@@ -47,4 +47,12 @@ export const getByKey = (
   });
 };
 
+export const saveToCache = (key: string, payload: unknown): void => {
+  console.log({ key, payload });
+};
+
+export const makeKey = (): string => {
+  return 'post-url-body';
+};
+
 export default redisClient;
