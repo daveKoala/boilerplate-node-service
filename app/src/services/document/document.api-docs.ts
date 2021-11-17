@@ -1,4 +1,8 @@
-const paths = {};
+const paths = {
+  '/data/': {
+    get: {},
+  },
+};
 
 const schemas = {
   Document: {
